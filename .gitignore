@@ -79,4 +79,4 @@ tmp/
 
 # Delve debugger
 .dlv/
-
+.env
