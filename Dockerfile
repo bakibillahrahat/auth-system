@@ -1,5 +1,5 @@
 # === Stage 1 (Builder)
-FROM golang:1.21-alpine as builder
+FROM golang:1.25.4-alpine as builder
 
 # Set the working directory inside the container
 WORKDIR /app
