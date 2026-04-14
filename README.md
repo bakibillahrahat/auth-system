@@ -1,5 +1,13 @@
 # Auth System
 
+![Go](https://img.shields.io/badge/Go-1.25.4-00ADD8?style=flat-square&logo=go)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-336791?style=flat-square&logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-Latest-2496ED?style=flat-square&logo=docker)
+![Redis](https://img.shields.io/badge/Redis-Alpine-DC382D?style=flat-square&logo=redis)
+![JWT](https://img.shields.io/badge/JWT-Latest-000000?style=flat-square&logo=jsonwebtokens)
+![GORM](https://img.shields.io/badge/GORM-v1.31.1-FF6B6B?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
+
 A robust Go backend authentication system with user registration, password hashing, JWT token generation, and PostgreSQL database integration. Built with modern Go practices and containerized with Docker.
 
 ## Overview
