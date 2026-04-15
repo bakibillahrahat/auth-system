@@ -16,7 +16,10 @@ func main() {
 
 	// 2. Setup the (Router/Endpoints)
 	// When someone send the request using /api/v1/register, It calls the handlers.Register function
-	http.HandleFunc("api/v1/register", handlers.Register)
+	http.HandleFunc("/api/v1/register", handlers.Register)
+	http.HandleFunc("/api/v1/health-check", func (w http.ResponseWriter, r *http.Request)  {
+		fmt.Fprint(w, "hello, world")
+	})
 
 	// 3. Setup port (Which is come from docker or .env file if not get it will run on port 8080)
 	port := os.Getenv("PORT")

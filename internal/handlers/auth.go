@@ -11,12 +11,12 @@ import (
 
 // type ResisterInput: Frontend will send a JSON payload with the following fields when a user tries to register. This struct is used to bind the incoming JSON data to a Go struct for easier processing.
 type RegisterInput struct {
-	FirstName string `json:"first_name" validate:"required"`
-	LastName  string `json:"last_name"  validate:"required"`
-	Email     string `json:"email"      validate:"required,email" gorm:"unique,not null"` 
-	Password  string `json:"password"   validate:"required,min=6" gorm:"not null"`
+	FirstName string         `json:"first_name" validate:"required"`
+	LastName  string         `json:"last_name"  validate:"required"`
+	Email     string         `json:"email"      validate:"required,email" gorm:"unique,not null"`
+	Password  string         `json:"password"   validate:"required,min=6" gorm:"not null"`
 	Address   models.Address `json:"address" gorm:"embedded"`
-	AvatarURL string `json:"avatar_url" validate:"omitempty,url"`
+	AvatarURL string         `json:"avatar_url" validate:"omitempty,url"`
 }
 
 // Register API: This struct defines the expected input for the user registration endpoint. It includes fields for the user's first name, last name, email, password, address, and an optional avatar URL. The struct tags specify how the JSON payload should be mapped to the struct fields and include validation rules to ensure that the input data is in the correct format and meets certain criteria (e.g., email must be valid, password must be at least 6 characters long).
@@ -40,6 +40,15 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check Email is valid or not
+	if !utils.IsVAlidEmail(input.Email) {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Invalid email format",
+		})
+		return
+	}
+
 	// 3. Convert The password in hashed
 	hashedPassword, err := utils.HashPassword(input.Password)
 	if err != nil {
@@ -49,25 +58,26 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 4. User Model for database
-	user := models.User {
+	user := models.User{
 		FirstName: input.FirstName,
-		LastName: input.LastName,
-		Email: input.Email,
-		Password: hashedPassword,
-		Address: input.Address,
+		LastName:  input.LastName,
+		Email:     input.Email,
+		Password:  hashedPassword,
+		Address:   input.Address,
 		AvatarURL: input.AvatarURL,
 	}
 
 	// 5. Data save on Database Using GORM
 	if err := database.DB.Create(&user).Error; err != nil {
-		// As Email field using gorm:'unique", So it get any duplicate email it will give error
-		w.WriteHeader(http.StatusConflict) // 409 Confilict
+		// As Email field using gORM:'unique", So it get any duplicate email it will give error
+		w.WriteHeader(http.StatusConflict) // 409 Conflict
 		json.NewEncoder(w).Encode(map[string]string{"error": "Email already exists"})
+		return
 	}
 
 	// 6. If data save successfully. User will get Success Message
 	w.WriteHeader(http.StatusCreated) // 201 Created
 	json.NewEncoder(w).Encode(map[string]string{
-		"message": "User registerd successfully!",
+		"message": "User registered successfully!",
 	})
 }
